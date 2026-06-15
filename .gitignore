@@ -2,6 +2,7 @@
 node_modules
 .env
 
+contracts/
 .DS_Store
 google-service-account.json
 google-service-account-firebase.json
@@ -31,7 +32,6 @@ transcripts/
 transcripts2/
 *.ytt
 *.srt
-*.json
 *.mp4
 *.mkv
 *.avi
