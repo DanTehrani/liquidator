@@ -1,0 +1,15 @@
+previews:
+  generation: automatic
+
+services:
+  - type: worker
+    name: liquidator
+    plan: starter
+    runtime: node
+    region: frankfurt
+    buildCommand: pnpm install && pnpm build
+    startCommand: pnpm tsx src/liquidate.ts
+    autoDeploy: true
+    envVars:
+      - fromGroup: liquidator
+
