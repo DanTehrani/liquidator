@@ -56,8 +56,8 @@ devDependencies:
     specifier: ^8.8.0
     version: 8.60.1(eslint@10.4.1)(typescript@5.9.3)
   eslint-plugin-security:
-    specifier: ^3.0.1
-    version: 3.0.1
+    specifier: ^4.0.1
+    version: 4.0.1
   prettier:
     specifier: ^3.3.2
     version: 3.8.3
@@ -1236,8 +1236,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint-plugin-security@3.0.1:
-    resolution: {integrity: sha512-XjVGBhtDZJfyuhIxnQ/WMm385RbX3DBu7H1J7HNNhmB2tnGxMeqVSnYv79oAj992ayvIBZghsymwkYFS6cGH4Q==}
+  /eslint-plugin-security@4.0.1:
+    resolution: {integrity: sha512-/lZCkOxPOWaf1jXAqgICrS8St3BMBccIPvhOSUYuV6VCr1o5nFVG998FnTLt6w2Nxb8Uo0nM8fzmnhp+GY/aEg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dependencies:
       safe-regex: 2.1.1
