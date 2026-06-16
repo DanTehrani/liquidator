@@ -1,5 +1,4 @@
 import pluginSecurity from 'eslint-plugin-security';
-import pluginReact from "eslint-plugin-react";
 import tseslint from 'typescript-eslint';
 import eslint from '@eslint/js';
 
@@ -26,12 +25,6 @@ export default tseslint.config(
   },
   {
     files: ["packages/app/**"],
-    plugins: {
-      react: pluginReact,
-    },
-    rules: {
-      "react/jsx-no-literals": "error"
-    }
   },
   {
     files: ['packages/sync/**', 'packages/scripts/**', 'packages/indexer/scripts/**'],

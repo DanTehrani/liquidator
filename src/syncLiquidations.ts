@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { getLogs, getPublicClient, MORPHO_ADDRESS, safeLoop } from './utils';
 import MorphoAbi from './abi/MorhpoAbi';
-import { Hex } from 'viem';
+import { Prisma } from '@prisma/client';
 import prisma from './prisma';
 import { logger } from './logger';
 
@@ -14,20 +14,12 @@ const liquidateEvent = MorphoAbi.find(
   > => abi.type === 'event' && abi.name === 'Liquidate'
 )!;
 
-type LiquidationRecord = {
-  marketId: Hex;
-  borrower: Hex;
-  seizedAssets: bigint;
-  repaidShares: bigint;
-  blockNumber: bigint;
-  logIndex: number;
-  transactionHash: Hex;
-};
+type LiquidationRecord = Prisma.LiquidationCreateManyInput;
 
 const START_BLOCK = 30_000_000n;
 
 const getLatestSavedBlock = async () => {
-  const latestSavedBlock = await prisma.position.findFirst({
+  const latestSavedBlock = await prisma.liquidation.findFirst({
     orderBy: { blockNumber: 'desc' },
     select: { blockNumber: true },
   });
@@ -68,8 +60,8 @@ const syncLiquidations = async () => {
         liquidations.push({
           marketId: log.args.id,
           borrower: log.args.borrower,
-          seizedAssets: log.args.seizedAssets,
-          repaidShares: log.args.repaidShares,
+          seizedAssets: log.args.seizedAssets.toString(),
+          repaidShares: log.args.repaidShares.toString(),
           blockNumber: log.blockNumber,
           logIndex: log.logIndex,
           transactionHash: log.transactionHash,

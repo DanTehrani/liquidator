@@ -7,6 +7,7 @@ import { getPosition } from './morpho';
 import prisma from './prisma';
 import { setDefaultResultOrder } from 'dns';
 import { logger } from './logger';
+import { Prisma } from '@prisma/client';
 
 const borrowEvent = MorphoAbi.find(
   (
@@ -60,7 +61,7 @@ const syncPositions = async () => {
       event: borrowEvent,
     });
 
-    const borrowers: Borrower[] = [];
+    const borrowers: Prisma.PositionCreateManyInput[] = [];
 
     for (const log of borrowLogs) {
       if (log.args.id && log.args.receiver) {
@@ -76,9 +77,9 @@ const syncPositions = async () => {
             blockNumber: log.blockNumber,
             logIndex: log.logIndex,
             transactionHash: log.transactionHash,
-            supplyShares: position.supplyShares,
-            borrowShares: position.borrowShares,
-            collateral: position.collateral,
+            supplyShares: position.supplyShares.toString(),
+            borrowShares: position.borrowShares.toString(),
+            collateral: position.collateral.toString(),
           });
         }
       }

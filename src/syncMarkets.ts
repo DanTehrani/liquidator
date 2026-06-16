@@ -31,7 +31,7 @@ const syncMarkets = async () => {
       collateralToken: market.collateralToken,
       oracle: market.oracle,
       irm: market.irm,
-      lltv: market.lltv,
+      lltv: market.lltv.toString(),
     };
 
     await prisma.market.upsert({
