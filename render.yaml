@@ -6,7 +6,7 @@ services:
     name: liquidator
     plan: starter
     runtime: node
-    region: frankfurt
+    region: singapore
     buildCommand: pnpm install && pnpm db:generate && pnpm build
     startCommand: pnpm tsx src/index.ts
     autoDeploy: true
