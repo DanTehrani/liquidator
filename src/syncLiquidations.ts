@@ -65,6 +65,9 @@ const syncLiquidations = async () => {
           blockNumber: log.blockNumber,
           logIndex: log.logIndex,
           transactionHash: log.transactionHash,
+          blockTimestamp: log.blockTimestamp
+            ? new Date(Number(log.blockTimestamp) * 1000)
+            : undefined,
         });
       }
     }
