@@ -4,6 +4,7 @@ import { getMarketParams, getPosition, liquidate } from './morpho';
 import { safeLoop, sleep } from './utils';
 import { logger } from './logger';
 import { ed, st } from './lib/timer';
+import prisma from './prisma';
 
 const getPositionKey = ({
   marketId,
@@ -100,18 +101,28 @@ const liquidatePosition = async ({
   }
 };
 
+const CHUNK_SIZE = 10;
+
 const liquidateAll = async () => {
-  for (const borrower of borrowers) {
-    try {
-      await liquidatePosition({
-        marketId: borrower.marketId as Hex,
-        borrower: borrower.borrower as Hex,
-      });
-    } catch (error) {
-      logger.error('Error liquidating position', {
-        error,
-      });
-    }
+  const positions = await prisma.position.findMany();
+
+  for (let i = 0; i < positions.length; i += CHUNK_SIZE) {
+    const chunk = positions.slice(i, i + CHUNK_SIZE);
+
+    await Promise.all(
+      chunk.map(async position => {
+        try {
+          await liquidatePosition({
+            marketId: position.marketId as Hex,
+            borrower: position.borrower as Hex,
+          });
+        } catch (error) {
+          logger.error('Error liquidating position', {
+            error,
+          });
+        }
+      })
+    );
 
     await sleep(1000);
   }
