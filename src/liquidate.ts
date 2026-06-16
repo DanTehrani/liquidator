@@ -1,7 +1,7 @@
 import { BaseError, ContractFunctionRevertedError, Hex } from 'viem';
 import borrowers from '../borrowers.json';
 import { getMarketParams, getPosition, liquidate } from './morpho';
-import { sleep } from './utils';
+import { safeLoop, sleep } from './utils';
 import { logger } from './logger';
 import { ed, st } from './lib/timer';
 
@@ -100,7 +100,7 @@ const liquidatePosition = async ({
   }
 };
 
-const main = async () => {
+const liquidateAll = async () => {
   for (const borrower of borrowers) {
     try {
       await liquidatePosition({
@@ -117,4 +117,11 @@ const main = async () => {
   }
 };
 
-main();
+const liquidateLoop = async () => {
+  await safeLoop({
+    fn: liquidateAll,
+    interval: 1 * 1000,
+  });
+};
+
+export default liquidateLoop;

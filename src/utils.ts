@@ -7,6 +7,7 @@ import {
   Hex,
 } from 'viem';
 import { hyperliquid } from 'viem/chains';
+import { logger } from './logger';
 
 export const MORPHO_ADDRESS =
   '0x68e37de8d93d3496ae143f2e900490f6280c57cd' as const satisfies Address;
@@ -66,8 +67,6 @@ export const getLogs = async <const TEvent extends AbiEvent>({
       toBlock: end,
     });
 
-    console.log(`Found ${chunk.length} logs from ${start} to ${end}`);
-
     logs.push(...chunk);
   }
 
@@ -76,4 +75,21 @@ export const getLogs = async <const TEvent extends AbiEvent>({
 
 export const sleep = (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
+};
+
+export const safeLoop = async ({
+  fn,
+  interval,
+}: {
+  fn: () => Promise<void>;
+  interval: number;
+}) => {
+  while (true) {
+    try {
+      await fn();
+    } catch (error) {
+      logger.error(`error in safeLoop ${error} `, { error });
+    }
+    await sleep(interval);
+  }
 };

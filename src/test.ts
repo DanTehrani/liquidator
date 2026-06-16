@@ -3,6 +3,7 @@ import { getLogs, MORPHO_ADDRESS } from './utils';
 import MorphoAbi from './abi/MorhpoAbi';
 import { Hex } from 'viem';
 import fs from 'fs';
+import { getPosition } from './morpho';
 
 const borrowEvent = MorphoAbi.find(
   (
@@ -20,7 +21,7 @@ type Borrower = {
 
 const main = async () => {
   const borrowLogs = await getLogs({
-    fromBlock: 37800000n,
+    fromBlock: 30000000n,
     toBlock: 37896669n,
     address: MORPHO_ADDRESS,
     event: borrowEvent,
@@ -30,14 +31,25 @@ const main = async () => {
 
   for (const log of borrowLogs) {
     if (log.args.id && log.args.receiver) {
-      borrowers.push({
+      const position = await getPosition({
         marketId: log.args.id,
         borrower: log.args.receiver,
       });
+
+      if (position.borrowShares > 0n) {
+        borrowers.push({
+          marketId: log.args.id,
+          borrower: log.args.receiver,
+        });
+      }
+    }
+
+    if (borrowers.length > 1000) {
+      break;
     }
   }
 
-  fs.writeFileSync('borrowers.json', JSON.stringify(borrowers, null, 2));
+  fs.writeFileSync('borrowers2.json', JSON.stringify(borrowers, null, 2));
 
   /*
   const marketId =

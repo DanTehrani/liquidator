@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Position {
+  id String @id @default(uuid())
+
+  marketId String
+  borrower String
+
+  borrowShares Decimal @db.Decimal(78, 0)
+  supplyShares Decimal @db.Decimal(78, 0)
+  collateral   Decimal @db.Decimal(78, 0)
+
+  blockNumber     BigInt
+  logIndex        Int
+  transactionHash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([logIndex, transactionHash])
+}
+
+model Liquidation {
+  id String @id @default(uuid())
+
+  marketId String
+  borrower String
+
+  seizedAssets Decimal @db.Decimal(78, 0)
+  repaidShares Decimal @db.Decimal(78, 0)
+
+  blockNumber     BigInt
+  logIndex        Int
+  transactionHash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([logIndex, transactionHash])
+}
+
+model Market {
+  id String @id
+
+  loanToken       String
+  collateralToken String
+  oracle          String
+  irm             String
+  lltv            Decimal @db.Decimal(78, 0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
